@@ -1,0 +1,17 @@
+- orm? (prisma strong, sequelize many examples) (Resolved) V
+- pagination V
+- req validation V
+- fix any type V
+- api docs (swagger) V
+- api versioning ?
+- implement RBAC ?
+- try catch utils X
+- trace (ex: telescope) X
+- linter V
+- error handling V
+- logging V
+- language/localization X
+- unit tests V
+- refactoring & cleanup
+- remove unused packages
+- update readme.md
