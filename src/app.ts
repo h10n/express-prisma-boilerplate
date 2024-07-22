@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, NextFunction, Request } from 'express';
 import cookieParser from 'cookie-parser';
 import PinoHttp from 'pino-http';
 
@@ -20,7 +20,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/api', authenticate, router);
+app.use(
+  '/api/:version',
+  authenticate,
+  (req: Request, _res, next: NextFunction) => {
+    req.version = req.params.version;
+    next();
+  },
+  router,
+);
 
 app.use(logError);
 app.use(handleError);

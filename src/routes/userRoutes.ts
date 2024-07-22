@@ -4,7 +4,9 @@ import {
   getListUsers,
   updateUser,
 } from '@/controllers/userController';
+import { getListUsersV2 } from '@/controllers/userControllerV2';
 import { validateRequest } from '@/middlewares/requestValidatorMiddleware';
+import { versionMiddleware } from '@/middlewares/versionMiddleware';
 import { getListUsersSchema } from '@/requests/userRequest';
 import { Router } from 'express';
 
@@ -61,6 +63,12 @@ const userRouter = Router();
  *      500:
  *        description: Server Error
  */
+userRouter.get(
+  '/',
+  versionMiddleware(2),
+  validateRequest(getListUsersSchema),
+  getListUsersV2,
+);
 userRouter.get('/', validateRequest(getListUsersSchema), getListUsers);
 userRouter.post('/', createNewUser);
 userRouter.delete('/:id', deleteUser);
