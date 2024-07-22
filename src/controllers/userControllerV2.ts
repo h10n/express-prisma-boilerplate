@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { getUsers } from '@/services/userService';
 import { StatusCodes } from 'http-status-codes';
-import { TUserQueryFilters } from 'types/userType';
+import { TUserQueryFilters } from '@/types/userType';
 
 export const getListUsersV2 = async (
   req: Request,

@@ -6,7 +6,7 @@ import {
   updateUser,
   countUsers,
 } from '@/repositories/userRepository';
-import { TUserData, TUserQueryFilters } from 'types/userType';
+import { TUserData, TUserQueryFilters } from '@/types/userType';
 
 export const getUsers = async (filters: TUserQueryFilters) => {
   const totalCount = await countUsers(filters);

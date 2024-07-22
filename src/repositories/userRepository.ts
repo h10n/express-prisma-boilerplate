@@ -1,7 +1,7 @@
 import prisma from '@/config/prisma';
 import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
-import { TUserFilter, TUserData, TUserQueryFilters } from 'types/userType';
+import { TUserFilter, TUserData, TUserQueryFilters } from '@/types/userType';
 
 const filterUsers = (filter: TUserFilter) => {
   let filters = {};
