@@ -1,7 +1,7 @@
 export type TUserFilter = {
-  roles: string;
-  genders: string;
-  keywords: string;
+  roles?: string;
+  genders?: string;
+  keywords?: string;
 };
 
 export type TUserQueryFilters = {
