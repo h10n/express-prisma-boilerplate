@@ -3,7 +3,8 @@
 - req validation V
 - fix any type V
 - api docs (swagger) V
-- api versioning ?
+- swagger api versioning ?
+- api versioning V
 - implement RBAC ?
 - try catch utils X
 - trace (ex: telescope) X

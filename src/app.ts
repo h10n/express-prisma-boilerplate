@@ -1,8 +1,10 @@
 import express, { Express, NextFunction, Request } from 'express';
 import cookieParser from 'cookie-parser';
 import PinoHttp from 'pino-http';
-
 import { logger } from '@/lib/pino';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from '@/lib/swagger';
+
 import router from './routes';
 import { authenticate } from './middlewares/authMiddleware';
 import { handleError } from './middlewares/errorHandlerMiddleware';
@@ -19,6 +21,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use('/docs', swaggerUi.serve);
+app.get('/docs', swaggerUi.setup(swaggerSpec));
 
 app.use(
   '/api/:version',

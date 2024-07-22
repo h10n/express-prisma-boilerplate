@@ -6,7 +6,7 @@ import {
 } from '@/controllers/userController';
 import { getListUsersV2 } from '@/controllers/userControllerV2';
 import { validateRequest } from '@/middlewares/requestValidatorMiddleware';
-import { versionMiddleware } from '@/middlewares/versionMiddleware';
+import { validateApiVersion } from '@/middlewares/versionMiddleware';
 import { getListUsersSchema } from '@/requests/userRequest';
 import { Router } from 'express';
 
@@ -65,7 +65,7 @@ const userRouter = Router();
  */
 userRouter.get(
   '/',
-  versionMiddleware(2),
+  validateApiVersion(2),
   validateRequest(getListUsersSchema),
   getListUsersV2,
 );

@@ -1,10 +1,8 @@
 import { Request, Response, Router } from 'express';
-import swaggerUi from 'swagger-ui-express';
 
 import userRouter from './userRoutes';
 import { authRouter } from './authRoutes';
 import { authorizeRole } from '@/middlewares/authRoleMiddleware';
-import { swaggerSpec } from '@/lib/swagger';
 
 const router = Router();
 /**
@@ -22,9 +20,6 @@ const router = Router();
 router.get('/health-check', (_req: Request, res: Response) =>
   res.sendStatus(200),
 );
-
-router.use('/docs', swaggerUi.serve);
-router.get('/docs', swaggerUi.setup(swaggerSpec));
 
 router.use('/users', authorizeRole, userRouter);
 router.use('/auth', authRouter);
