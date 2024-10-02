@@ -1,0 +1,47 @@
+components:
+  schemas:
+    generals:
+      parameters:
+        StartRange:
+          in: query
+          name: range[start]
+          schema:
+            type: integer
+            minimum: 0
+          description: Start of the range
+        EndRange:
+          in: query
+          name: range[end]
+          schema:
+            type: integer
+          description: End of the range
+        SortByColumn:
+          in: query
+          name: sortBy[column]
+          schema:
+            type: string
+          description: Column to sort by
+        SortOrder:
+          in: query
+          name: sortBy[order]
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+          description: Sort order
+        RoleFilter:
+          in: query
+          name: filter[roles]
+          schema:
+            type: integer
+          description: Role filter
+        GenderFilter:
+          in: query
+          name: filter[genders]
+          schema:
+            type: string
+            enum:
+              - MALE
+              - FEMALE
+          description: Gender filter

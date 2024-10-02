@@ -13,6 +13,11 @@ const options = {
       title: 'REST API Docs',
       version,
     },
+    servers: [
+      {
+        url: `${process.env.APP_BASE_URL}/api`,
+      },
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -28,7 +33,7 @@ const options = {
       },
     ],
   },
-  apis: ['./src/routes/*.ts', './src/requests/*.ts'],
+  apis: ['./src/api-docs/*.yaml', './src/api-docs/schemas/*/*.yaml'],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

@@ -1,0 +1,24 @@
+components:
+  schemas:
+    users:
+      responses:
+        patch:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            email:
+              type: string
+            role:
+              type: integer
+            gender:
+              type: string
+              enum:
+                - MALE
+                - FEMALE
+          required:
+            - id
+            - name
+            - email

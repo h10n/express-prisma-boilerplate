@@ -1,0 +1,31 @@
+/v1/users/status:
+  patch:
+    tags: [V1 users]
+    summary: Patch user status
+    description: Retrieves a list of users.
+    parameters:
+      - $ref: '#components/schemas/generals/parameters/StartRange'
+      - $ref: '#components/schemas/generals/parameters/EndRange'
+      - $ref: '#components/schemas/generals/parameters/SortByColumn'
+      - $ref: '#components/schemas/generals/parameters/SortOrder'
+      - $ref: '#components/schemas/generals/parameters/RoleFilter'
+      - $ref: '#components/schemas/generals/parameters/GenderFilter'
+    requestBody:
+      description: patch user status schema
+      content:
+        application/json:
+          schema:
+            $ref: '#components/schemas/users/requests/patch'
+    responses:
+      200:
+        description: patch user status success
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/users/responses/patch'
+      400:
+        description: Error occurred
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/generals/error'

@@ -1,0 +1,24 @@
+components:
+  schemas:
+    users:
+      requests:
+        patch:
+          type: object
+          required:
+            - companyId
+            - adminUserId
+            - userId
+            - status
+          properties:
+            companyId:
+              type: string
+              default: 638ebc3fdabf5e1fe84d3d92
+            adminUserId:
+              type: string
+              default: 638ebc3edabf5e1fe84d3d90
+            userId:
+              type: string
+              default: 638ebfbb0cf9be4ac42e2aef
+            status:
+              type: boolean
+              default: false
