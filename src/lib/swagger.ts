@@ -15,7 +15,7 @@ const options = {
     },
     servers: [
       {
-        url: `${process.env.APP_BASE_URL}/api`,
+        url: `${process.env.APP_URL}/api`,
       },
     ],
     components: {

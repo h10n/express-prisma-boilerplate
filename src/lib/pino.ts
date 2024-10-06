@@ -5,6 +5,8 @@ import pino from 'pino';
 dotenv.config();
 
 const pinoOptions = () => {
+  const date = new Date().toISOString().split('T')[0];
+
   const defaultOptions = {
     level: process.env.APP_LOG_LEVEL || 'info',
     timestamp: pino.stdTimeFunctions.isoTime,
@@ -16,7 +18,7 @@ const pinoOptions = () => {
       transport: {
         target: 'pino/file',
         options: {
-          destination: `${process.cwd()}/src/storage/logs/app.log`,
+          destination: `${process.cwd()}/src/storage/logs/${date}.log`,
           mkdir: true,
         },
       },

@@ -13,6 +13,7 @@
 - logging V
 - language/localization X
 - unit tests V
-- refactoring & cleanup
-- remove unused packages
-- update readme.md
+- refactoring & cleanup V
+- remove unused packages V
+- update readme.md V
+- build prod
