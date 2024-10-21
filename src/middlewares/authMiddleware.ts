@@ -1,5 +1,6 @@
 import { lucia } from '@/config/lucia';
 import { APP_ENV } from '@/constants';
+import { ENV } from 'config';
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { verifyRequestOrigin } from 'lucia';
@@ -9,7 +10,7 @@ export const authenticate = async (
   res: Response,
   next: NextFunction,
 ) => {
-  if (process.env.APP_ENV === APP_ENV.PRODUCTION && req.method !== 'GET') {
+  if (ENV.NODE_ENV === APP_ENV.PRODUCTION && req.method !== 'GET') {
     const originHeader = req.headers.origin ?? null;
     const hostHeader = req.headers.host ?? null;
 

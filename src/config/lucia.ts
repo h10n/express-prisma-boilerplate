@@ -1,6 +1,7 @@
 import prisma from './prisma';
 import { Lucia } from 'lucia';
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
+import { ENV } from 'config';
 
 interface DatabaseUser {
   id: string;
@@ -13,7 +14,7 @@ const adapter = new PrismaAdapter(prisma.session, prisma.user);
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
     attributes: {
-      secure: process.env.APP_ENV === 'production',
+      secure: ENV.NODE_ENV === 'production',
     },
   },
   getUserAttributes: (attributes) => {

@@ -1,4 +1,5 @@
 import { APP_ENV, REQUEST_STATUSES } from '@/constants';
+import { ENV } from 'config';
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { z } from 'zod';
@@ -38,9 +39,9 @@ const sendErrors = (res: Response, err: Error) => {
   error.status =
     error.statusCode >= 400 && error.statusCode < 500 ? 'fail' : 'error';
 
-  if (process.env.APP_ENV === APP_ENV.DEVELOPMENT) {
+  if (ENV.NODE_ENV === APP_ENV.DEVELOPMENT) {
     devErrors(res, error);
-  } else if (process.env.APP_ENV === APP_ENV.PRODUCTION) {
+  } else if (ENV.NODE_ENV === APP_ENV.PRODUCTION) {
     prodErrors(res, error);
   }
 };

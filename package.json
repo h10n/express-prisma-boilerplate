@@ -5,8 +5,8 @@
   "scripts": {
     "build": "rimraf dist && tsc && tsc-alias",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "tsx dist/index.js",
-    "dev": "tsx watch --clear-screen=false ./index.ts",
+    "start": "NODE_ENV=production tsx dist/index.js",
+    "dev": "NODE_ENV=development tsx watch --clear-screen=false ./index.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "prepare": "husky && husky install"

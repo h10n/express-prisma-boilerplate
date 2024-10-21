@@ -42,10 +42,10 @@ build-dev: ## Build the container image - Development
 		-f Dockerfile.dev .
 
 run: ## Run the container image - Production
-	docker run -d --restart unless-stopped -it -p 3000:3000 --env-file .env --name ${PROD_CONTAINER_NAME} ${PROD_IMAGE_NAME}
+	docker run -d --restart unless-stopped -it -p 3000:3000 --env-file .env.production --name ${PROD_CONTAINER_NAME} ${PROD_IMAGE_NAME}
 
 run-dev: ## Run the container image - Development
-	docker run -d -it -p 1337:1337 -v $(shell pwd):/app -v /app/node_modules --env-file .env --name ${DEV_CONTAINER_NAME} ${DEV_IMAGE_NAME}
+	docker run -d -it -p 1337:1337 -v $(shell pwd):/app -v /app/node_modules --env-file .env.development --name ${DEV_CONTAINER_NAME} ${DEV_IMAGE_NAME}
 
 stop: ## Stop the containers - Production
 	docker stop ${PROD_CONTAINER_NAME}

@@ -16,22 +16,13 @@ process.on('uncaughtException', (err) => {
 import app from '@/app';
 import http from 'http';
 import debug from 'debug';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { ENV } from 'config';
 
 /**
  * Normalize a port into a number, string, or false.
  */
 
-const normalizePort = (val: string) => {
-  const port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
+const normalizePort = (port: number) => {
   if (port >= 0) {
     // port number
     return port;
@@ -82,7 +73,7 @@ const log = debug('express-service:server');
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.APP_PORT || '3000');
+const port = normalizePort(ENV.APP_PORT || 3000);
 app.set('port', port);
 
 /**

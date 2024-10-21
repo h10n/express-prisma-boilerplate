@@ -1,4 +1,5 @@
 import { APP_ENV } from '@/constants';
+import { ENV } from 'config';
 import dotenv from 'dotenv';
 import pino from 'pino';
 
@@ -8,24 +9,24 @@ const pinoOptions = () => {
   const date = new Date().toISOString().split('T')[0];
 
   const defaultOptions = {
-    level: process.env.APP_LOG_LEVEL || 'info',
+    level: ENV.APP_LOG_LEVEL || 'info',
     timestamp: pino.stdTimeFunctions.isoTime,
   };
 
-  if (process.env.APP_ENV === APP_ENV.PRODUCTION) {
+  if (ENV.NODE_ENV === APP_ENV.PRODUCTION) {
     return {
       ...defaultOptions,
       transport: {
         target: 'pino/file',
         options: {
-          destination: `${process.cwd()}/src/storage/logs/${date}.log`,
+          destination: `${process.cwd()}/logs/${date}.log`,
           mkdir: true,
         },
       },
     };
   }
 
-  if (process.env.APP_ENV === APP_ENV.DEVELOPMENT) {
+  if (ENV.NODE_ENV === APP_ENV.DEVELOPMENT) {
     return {
       ...defaultOptions,
       transport: {

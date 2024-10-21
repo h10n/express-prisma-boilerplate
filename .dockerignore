@@ -18,5 +18,6 @@ jest.config.js
 Dockerfile
 docker-compose.yml
 
+logs
 .git
 .env
