@@ -1,5 +1,6 @@
 FROM node:20-alpine AS dev
 WORKDIR /app
+RUN npm install -g dotenv-cli
 COPY package*.json ./
 RUN npm install
 COPY . .

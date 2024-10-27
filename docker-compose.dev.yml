@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  express-service:
+    container_name: express-service-dev
+    image: express-service:dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: dev
+    ports:
+      - '1337:1337'
+    env_file:
+      - .env.development
+    volumes:
+      - ./:/app
+      - express-service-node-modules:/app/node_modules
+    networks:
+      - express-service-net
+    depends_on:
+      - express-service-db
+
+  express-service-db:
+    image: postgres:15.3
+    container_name: express-service-db-dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: express-service
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - express-service-net
+
+networks:
+  express-service-net:
+
+volumes:
+  express-service-node-modules:
+  postgres_data:

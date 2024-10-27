@@ -1,25 +1,34 @@
-# app name should be overridden.
-# ex) production-stage: make build APP_NAME=<APP_NAME>
-# ex) development-stage: make build-dev APP_NAME=<APP_NAME>
-
 SHELL := /bin/bash
 
 # Default app name
 APP_NAME = express-service
 
-# Set different image names for production and development
-PROD_IMAGE_NAME = $(APP_NAME):latest
-DEV_IMAGE_NAME = $(APP_NAME):dev
-
-PROD_CONTAINER_NAME = $(APP_NAME)-prod
-DEV_CONTAINER_NAME = $(APP_NAME)-dev
+# Set image and container names dynamically based on the environment
+IMAGE_NAME = $(APP_NAME):$(ENV)
+CONTAINER_NAME = $(APP_NAME)-$(ENV)
 
 NETWORK_NAME = $(APP_NAME)-net
 
-# Override APP_NAME if provided
-APP_NAME := $(APP_NAME)
+# Get the environment from the first positional argument
+ENV := $(word 2, $(MAKECMDGOALS))
 
-.PHONY: help start clean db test
+# Allow the second argument to act as a parameter without treating it as a target
+$(eval $(ENV):;@:)
+
+# Map `prod` and `dev` to the correct .env file names
+ifeq ($(ENV), prod)
+	ENV_FILE := .env.production
+	DOCKER_FILE := docker-compose.prod.yml
+	DOCKER_IMAGE := Dockerfile.prod
+	PORT := 3000
+else ifeq ($(ENV), dev)
+	ENV_FILE := .env.development
+	DOCKER_FILE := docker-compose.dev.yml
+	DOCKER_IMAGE := Dockerfile.dev
+	PORT := 1337
+endif
+
+.PHONY: help up down build run stop remove clean remove-vol net net-connect rebuild db
 
 help:
 	@grep -E '^[1-9a-zA-Z_-]+:.*?## .*$$|(^#--)' $(MAKEFILE_LIST) \
@@ -27,48 +36,45 @@ help:
 	| sed -e 's/\[32m #-- /[33m/'
 
 #-- Docker
-up: ## Up the container images
-	docker-compose up -d
+up: ## Up the container images (prod or dev)
+	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
+	docker compose -f $(DOCKER_FILE) up -d
 
-down: ## Down the container images
-	docker-compose down
+down: ## Down the container images (prod or dev)
+	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
+	docker compose -f $(DOCKER_FILE) down
 
-build: ## Build the container image - Production
-	docker build -t ${PROD_IMAGE_NAME} \
-		-f Dockerfile.build .
+build: ## Build the container image (prod or dev)
+	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
+	docker build -t $(IMAGE_NAME) -f $(DOCKER_IMAGE) .
 
-build-dev: ## Build the container image - Development
-	docker build -t ${DEV_IMAGE_NAME} \
-		-f Dockerfile.dev .
+run: ## Run the container image (prod or dev)
+	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
+	docker run -d --restart unless-stopped -it -p $(PORT):$(PORT) --env-file $(ENV_FILE) --name $(CONTAINER_NAME) $(IMAGE_NAME)
 
-run: ## Run the container image - Production
-	docker run -d --restart unless-stopped -it -p 3000:3000 --env-file .env.production --name ${PROD_CONTAINER_NAME} ${PROD_IMAGE_NAME}
+stop: ## Stop the containers (prod or dev)
+	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
+	docker stop $(CONTAINER_NAME)
 
-run-dev: ## Run the container image - Development
-	docker run -d -it -p 1337:1337 -v $(shell pwd):/app -v /app/node_modules --env-file .env.development --name ${DEV_CONTAINER_NAME} ${DEV_IMAGE_NAME}
-
-stop: ## Stop the containers - Production
-	docker stop ${PROD_CONTAINER_NAME}
-
-remove: ## Remove the containers
-	docker container rm -f ${PROD_CONTAINER_NAME}
+remove: ## Remove the container (prod or dev)
+	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
+	docker container rm -f $(CONTAINER_NAME)
 
 clean: ## Clean the images
-	docker rmi -f ${PROD_IMAGE_NAME} ${DEV_IMAGE_NAME}
+	docker rmi -f $(APP_NAME):prod $(APP_NAME):dev
 
 remove-vol: ## Remove the volumes
-	docker volume rm -f ${APP_NAME}
+	docker volume rm -f $(APP_NAME)
 
-net: ## Create the Network
-	docker network create ${NETWORK_NAME}
+net: ## Create the network
+	docker network create $(NETWORK_NAME)
 
-net-connect: ## Connect Container to the Network - Production
-	docker network connect ${NETWORK_NAME} ${PROD_CONTAINER_NAME}
+net-connect: ## Connect the container to the network (prod or dev)
+	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
+	docker network connect $(NETWORK_NAME) $(CONTAINER_NAME)
 
-net-connect-dev: ## Connect Container to the Network - Development
-	docker network connect ${NETWORK_NAME} ${DEV_CONTAINER_NAME}
+rebuild: stop remove build run net-connect ## Re-build and run the container (prod or dev)
 
-rebuild: stop remove build run net-connect ## Re-build Production
 #-- Database
-db: ## Start the local database MongoDB
+db: ## Start the local database (MongoDB)
 	docker-compose up -d mongo

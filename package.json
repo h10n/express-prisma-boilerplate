@@ -1,6 +1,6 @@
 {
   "name": "express-service",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "build": "rimraf dist && tsc && tsc-alias",
@@ -9,7 +9,10 @@
     "dev": "NODE_ENV=development tsx watch --clear-screen=false ./index.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
-    "prepare": "husky && husky install"
+    "prepare": "husky && husky install",
+    "migrate": "dotenv -e .env.$NODE_ENV -- prisma migrate dev",
+    "seed": "dotenv -e .env.$NODE_ENV -- prisma db seed",
+    "db-reset": "dotenv -e .env.$NODE_ENV -- prisma migrate reset"
   },
   "dependencies": {
     "@lucia-auth/adapter-prisma": "^4.0.1",
