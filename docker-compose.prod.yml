@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  express-service-prod:
+    container_name: express-service-prod
+    image: express-service:prod
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env.production

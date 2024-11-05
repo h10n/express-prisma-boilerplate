@@ -21,11 +21,13 @@ ifeq ($(ENV), prod)
 	DOCKER_FILE := docker-compose.prod.yml
 	DOCKER_IMAGE := Dockerfile.prod
 	PORT := 3000
+	PROJECT_NAME := express-prod
+	UP_FLAG := --build
 else ifeq ($(ENV), dev)
 	ENV_FILE := .env.development
 	DOCKER_FILE := docker-compose.dev.yml
 	DOCKER_IMAGE := Dockerfile.dev
-	PORT := 1337
+	PROJECT_NAME := express-dev
 endif
 
 .PHONY: help up down build run stop remove clean remove-vol net net-connect rebuild db
@@ -38,11 +40,11 @@ help:
 #-- Docker
 up: ## Up the container images (prod or dev)
 	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
-	docker compose -f $(DOCKER_FILE) up -d
+	docker compose -p $(PROJECT_NAME) -f $(DOCKER_FILE) up -d $(UP_FLAG)
 
 down: ## Down the container images (prod or dev)
 	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
-	docker compose -f $(DOCKER_FILE) down
+	docker compose -p $(PROJECT_NAME) -f $(DOCKER_FILE) down
 
 build: ## Build the container image (prod or dev)
 	@if [ -z "$(ENV)" ]; then ENV=prod; fi; \
