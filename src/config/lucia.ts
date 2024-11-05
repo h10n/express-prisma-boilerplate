@@ -1,7 +1,7 @@
 import prisma from './prisma';
 import { Lucia } from 'lucia';
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
-import { ENV } from 'config';
+import { ENV } from '@/config/environment';
 
 interface DatabaseUser {
   id: string;

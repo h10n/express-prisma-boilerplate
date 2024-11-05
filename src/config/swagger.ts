@@ -1,7 +1,7 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import path from 'path';
 import fs from 'fs';
-import { ENV } from 'config';
+import { ENV } from '@/config/environment';
 
 const packageJsonPath = path.resolve(process.cwd(), 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));

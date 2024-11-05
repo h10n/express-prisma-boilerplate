@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { logger } from '@/lib/pino';
+import { logger } from '@/config/pino';
 
 process.on('uncaughtException', (err) => {
   logger.fatal(
@@ -16,7 +16,7 @@ process.on('uncaughtException', (err) => {
 import app from '@/app';
 import http from 'http';
 import debug from 'debug';
-import { ENV } from 'config';
+import { ENV } from '@/config/environment';
 
 /**
  * Normalize a port into a number, string, or false.

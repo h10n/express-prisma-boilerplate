@@ -1,5 +1,5 @@
 import { APP_ENV, REQUEST_STATUSES } from '@/constants';
-import { ENV } from 'config';
+import { ENV } from '@/config/environment';
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { z } from 'zod';

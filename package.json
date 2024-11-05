@@ -17,10 +17,15 @@
   "dependencies": {
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@prisma/client": "^5.12.1",
+    "compression": "^1.7.4",
     "cookie-parser": "~1.4.6",
+    "cors": "^2.8.5",
     "debug": "~4.3.4",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "hpp": "^0.2.3",
     "http-status-codes": "^2.3.0",
     "lucia": "^3.1.1",
     "oslo": "^1.2.0",
@@ -32,9 +37,12 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
     "@types/debug": "^4.1.12",
     "@types/express": "^4.17.21",
+    "@types/hpp": "^0.2.6",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.5",
     "@types/swagger-jsdoc": "^6.0.4",

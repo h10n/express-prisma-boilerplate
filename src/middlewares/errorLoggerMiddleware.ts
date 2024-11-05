@@ -1,4 +1,4 @@
-import { logger } from '@/lib/pino';
+import { logger } from '@/config/pino';
 import { NextFunction, Request, Response } from 'express';
 
 export const logError = (

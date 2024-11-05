@@ -1,5 +1,5 @@
 import { APP_ENV } from '@/constants';
-import { ENV } from 'config';
+import { ENV } from '@/config/environment';
 import dotenv from 'dotenv';
 import pino from 'pino';
 
