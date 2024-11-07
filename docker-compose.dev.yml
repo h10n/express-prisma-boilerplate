@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile.dev
       target: dev
     ports:
-      - '1337:1337'
+      - '5000:5000'
     env_file:
       - .env.development
     volumes:
