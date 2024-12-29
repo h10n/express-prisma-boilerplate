@@ -18,6 +18,7 @@ export const getListUsers = async (
     const userList = await getUsers(queryFilters);
 
     res.status(StatusCodes.OK).json({
+      status: 'success',
       message: 'Get users list successfully',
       data: userList,
     });
@@ -36,6 +37,7 @@ export const createNewUser = async (
     const createdUser = await createUser(userData);
 
     res.status(StatusCodes.CREATED).json({
+      status: 'success',
       message: 'new user created successfully',
       data: createdUser,
     });
@@ -55,7 +57,9 @@ export const deleteUser = async (
     await deleteUserById(userId);
 
     res.status(StatusCodes.OK).json({
+      status: 'success',
       message: 'user deleted successfully',
+      data: null,
     });
   } catch (err) {
     return next(err);
@@ -74,6 +78,7 @@ export const updateUser = async (
     const updatedUser = await updateUserById(userId, userData);
 
     res.status(StatusCodes.OK).json({
+      status: 'success',
       message: 'existing user updated successfully',
       data: updatedUser,
     });

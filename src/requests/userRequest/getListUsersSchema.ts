@@ -1,10 +1,13 @@
 import { z } from 'zod';
 
 const getQueryParamsSchema = () => {
-  const rangeSchema = z.object({
-    start: z.string({ required_error: 'Range start is required' }),
-    end: z.string({ required_error: 'Range end is required' }),
-  });
+  const rangeSchema = z.object(
+    {
+      start: z.string({ required_error: 'Range start is required' }),
+      end: z.string({ required_error: 'Range end is required' }),
+    },
+    { required_error: 'Range is required' },
+  );
 
   const sortBySchema = z.object({
     column: z.string({ required_error: 'SortBy column is required' }),
@@ -17,17 +20,13 @@ const getQueryParamsSchema = () => {
     keywords: z.string({ required_error: 'Filter keywords is required' }),
   });
 
-  const filterSchemaPartial = filterSchema.partial();
-
   const queryParamsSchema = z.object({
     range: rangeSchema,
-    sortBy: sortBySchema,
-    filter: filterSchemaPartial,
+    sortBy: sortBySchema.optional(),
+    filter: filterSchema.partial().optional(),
   });
 
-  const queryParamsPartial = queryParamsSchema.partial();
-
-  return queryParamsPartial;
+  return queryParamsSchema;
 };
 
 export const getListUsersSchema = z.object({

@@ -150,6 +150,26 @@ export const findUserById = async (id: string) => {
   });
 };
 
+export const findUserByEmail = async (email: string) => {
+  return await prisma.user.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      email: true,
+      password: true,
+      profile: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatarUrl: true,
+        },
+      },
+      role: { select: { id: true, name: true } },
+    },
+  });
+};
+
 export const insertUser = async (userData: TUserData) => {
   const user = await prisma.user.create({
     data: {

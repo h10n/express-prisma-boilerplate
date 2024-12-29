@@ -13,6 +13,7 @@ export const getListUsersV2 = async (
     const userList = await getUsers(queryFilters);
 
     res.status(StatusCodes.OK).json({
+      status: 'success',
       message: 'Get users list successfully v2',
       data: userList,
     });

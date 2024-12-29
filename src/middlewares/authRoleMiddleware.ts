@@ -11,7 +11,12 @@ export const authorizeRole = async (
     return res
       .status(StatusCodes.FORBIDDEN)
       .json({
-        message: 'Forbidden Access',
+        status: 'fail',
+        message: 'Authorization Error',
+        error: {
+          code: 'USER_NOT_FOUND',
+          message: 'Forbidden Access',
+        },
       })
       .end();
   }

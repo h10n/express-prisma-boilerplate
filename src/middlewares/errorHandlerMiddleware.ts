@@ -2,7 +2,7 @@ import { APP_ENV, REQUEST_STATUSES } from '@/constants';
 import { ENV } from '@/config/environment';
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { z } from 'zod';
+import { z, ZodIssue } from 'zod';
 
 type TAppError = Error & {
   status: string;
@@ -55,7 +55,12 @@ export const handleError = (
   if (err instanceof z.ZodError) {
     res.status(StatusCodes.BAD_REQUEST).json({
       status: REQUEST_STATUSES.FAIL,
-      error: err.flatten(),
+      message: 'Validation Error',
+      error: err.errors.map((issue: ZodIssue) => ({
+        path: issue.path.join('.'),
+        message: issue.message,
+        code: issue.code,
+      })),
     });
   } else if (err instanceof Error) {
     sendErrors(res, err);
