@@ -5,6 +5,7 @@ import {
   validateUserCredentials,
   createUserSession,
 } from '@/services/authService';
+import { ValidationError } from '@/errors/ValidationError';
 
 export const login = async (
   req: Request,
@@ -17,14 +18,11 @@ export const login = async (
     const user = await validateUserCredentials(email, password);
 
     if (!user) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({
-        status: 'fail',
-        message: 'Authentication Failed',
-        error: {
-          code: 'INVALID_CREDENTIALS',
-          message: 'Incorrect email or password.',
-        },
-      });
+      throw new ValidationError(
+        'Incorrect email or password',
+        'INVALID_CREDENTIALS',
+        StatusCodes.UNAUTHORIZED,
+      );
     }
 
     const session = await createUserSession(user.id);
@@ -41,21 +39,18 @@ export const login = async (
         },
       });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
 export const logout = async (_: Request, res: Response, next: NextFunction) => {
   try {
     if (!res.locals.session) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({
-        status: 'fail',
-        message: 'No active session found',
-        error: {
-          code: 'SESSION_NOT_FOUND',
-          message: 'No session exists for the user.',
-        },
-      });
+      throw new ValidationError(
+        'No session exists for the user',
+        'SESSION_NOT_FOUND',
+        StatusCodes.UNAUTHORIZED,
+      );
     }
 
     await lucia.invalidateUserSessions(res.locals.session.userId);
@@ -69,6 +64,6 @@ export const logout = async (_: Request, res: Response, next: NextFunction) => {
         data: null,
       });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };

@@ -7,6 +7,7 @@ import compression from 'compression';
 import hpp from 'hpp';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
+import { StatusCodes } from 'http-status-codes';
 
 import { logger } from '@/config/pino';
 import { swaggerSpec } from '@/config/swagger';
@@ -15,6 +16,7 @@ import router from './routes';
 import { authenticate } from './middlewares/authMiddleware';
 import { handleError } from './middlewares/errorHandlerMiddleware';
 import { logError } from './middlewares/errorLoggerMiddleware';
+import { REQUEST_STATUSES } from './constants';
 
 const app: Express = express();
 
@@ -33,9 +35,11 @@ const limiter = rateLimit({
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: (_req, res) =>
-    res
-      .status(429)
-      .json({ message: 'Too many requests, please try again later.' }),
+    res.status(StatusCodes.TOO_MANY_REQUESTS).json({
+      status: REQUEST_STATUSES.FAIL,
+      message: 'Too many requests, please try again later.',
+      code: 'TOO_MANY_REQUESTS',
+    }),
 });
 app.use(limiter);
 
