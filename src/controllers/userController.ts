@@ -19,7 +19,7 @@ export const getListUsers = async (
 
     res.status(StatusCodes.OK).json({
       status: 'success',
-      message: 'Get users list successfully',
+      message: 'User list retrieved successfully.',
       data: userList,
     });
   } catch (err) {
@@ -38,7 +38,7 @@ export const createNewUser = async (
 
     res.status(StatusCodes.CREATED).json({
       status: 'success',
-      message: 'new user created successfully',
+      message: 'A new user account has been created successfully.',
       data: createdUser,
     });
   } catch (err) {
@@ -58,7 +58,7 @@ export const deleteUser = async (
 
     res.status(StatusCodes.OK).json({
       status: 'success',
-      message: 'user deleted successfully',
+      message: 'The user account has been deleted successfully.',
       data: null,
     });
   } catch (err) {
@@ -79,7 +79,7 @@ export const updateUser = async (
 
     res.status(StatusCodes.OK).json({
       status: 'success',
-      message: 'existing user updated successfully',
+      message: 'The user account has been updated successfully.',
       data: updatedUser,
     });
   } catch (err) {

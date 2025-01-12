@@ -74,7 +74,7 @@ export const handleError = (
       status: REQUEST_STATUSES.FAIL,
       message: ERROR_MESSAGES.VALIDATION_ERROR,
       code: ERROR_CODES.REQUEST_VALIDATION_ERROR,
-      error: err.errors.map((issue: ZodIssue) => ({
+      errors: err.errors.map((issue: ZodIssue) => ({
         path: issue.path.join('.'),
         message: issue.message,
         code: issue.code,

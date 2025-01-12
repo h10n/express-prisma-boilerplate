@@ -8,16 +8,24 @@ export const authorizeRole = async (
   next: NextFunction,
 ) => {
   try {
-    const user = res.locals.user;
-    if (!user) {
+    const { session, user } = res.locals;
+
+    if (!session || !user) {
       throw new ValidationError(
-        'Forbidden Access',
-        'USER_NOT_FOUND',
-        StatusCodes.FORBIDDEN,
+        'Authentication required. Please log in to access this resource.',
+        'AUTHENTICATION_REQUIRED',
+        StatusCodes.UNAUTHORIZED,
       );
     }
 
     // TODO: Implement RBAC logic to check if the user has the required role(s)
+    // throw new ValidationError(
+    //   'Access denied. Your role does not have permission to access this resource.',
+    //   'ROLE_FORBIDDEN',
+    //   StatusCodes.FORBIDDEN,
+    // );
+
+    // TODO: Get User Data from database
 
     return next();
   } catch (err) {

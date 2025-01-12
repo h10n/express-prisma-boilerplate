@@ -14,7 +14,7 @@ export const getListUsersV2 = async (
 
     res.status(StatusCodes.OK).json({
       status: 'success',
-      message: 'Get users list successfully v2',
+      message: 'User list retrieved successfully (v2).',
       data: userList,
     });
   } catch (err) {

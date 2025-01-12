@@ -22,7 +22,9 @@ export const authenticate = async (
       return res
         .status(StatusCodes.FORBIDDEN)
         .json({
-          message: 'CSRF Error',
+          status: 'fail',
+          message: 'CSRF token validation failed.',
+          code: 'CSRF_TOKEN_VALIDATION_FAILED',
         })
         .end();
     }

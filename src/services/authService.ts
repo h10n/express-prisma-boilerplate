@@ -30,3 +30,13 @@ export const createUserSession = async (userId: string) => {
 
   return { token: session.id, cookie };
 };
+
+export const getUserSession = async (email: string) => {
+  const existingUser = await findUserByEmail(email);
+
+  if (!existingUser) return null;
+
+  const { password: _, ...userWithoutPassword } = existingUser;
+
+  return userWithoutPassword;
+};

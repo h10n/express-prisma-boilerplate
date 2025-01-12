@@ -12,7 +12,7 @@ export const getUsers = async (filters: TUserQueryFilters) => {
   const totalCount = await countUsers(filters);
 
   const usersData = await findUsers(filters);
-  return { data: usersData, total: totalCount || 0 };
+  return { users: usersData, total: totalCount || 0 };
 };
 
 export const getUserById = async (id: string) => {
