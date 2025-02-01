@@ -77,6 +77,9 @@ export const findUsers = async ({
   const { start = 0, end = 10 } = range || {};
   const { column = null, order = 'asc' } = sortBy || {};
 
+  const skip = Number(start) || 0;
+  const skipEnd = Number(end) || 0;
+  const take = skipEnd - skip;
   const orderBy = [];
 
   if (column && order) {
@@ -109,8 +112,8 @@ export const findUsers = async ({
     },
     where: filter ? filterUsers(filter) : undefined,
     orderBy,
-    skip: Number(start),
-    take: Number(end),
+    skip,
+    take,
   });
 };
 
