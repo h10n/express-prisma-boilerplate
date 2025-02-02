@@ -10,7 +10,7 @@ export type TUserQueryFilters = {
     end: number;
   };
   sortBy?: {
-    column: number;
+    column: string;
     order: string;
   };
   filter?: TUserFilter;

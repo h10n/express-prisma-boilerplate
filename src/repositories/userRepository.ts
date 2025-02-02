@@ -3,6 +3,17 @@ import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
 import { TUserFilter, TUserData, TUserQueryFilters } from '@/types/userType';
 
+const buildOrderBy = (column: string, order: string) => {
+  const keys = column.split('.');
+  let orderBy: Record<string, any> = { [keys.pop()!]: order };
+
+  while (keys.length) {
+    orderBy = { [keys.pop()!]: orderBy };
+  }
+
+  return orderBy;
+};
+
 const filterUsers = (filter: TUserFilter) => {
   let filters = {};
 
@@ -75,7 +86,7 @@ export const findUsers = async ({
   filter,
 }: TUserQueryFilters) => {
   const { start = 0, end = 10 } = range || {};
-  const { column = null, order = 'asc' } = sortBy || {};
+  const { column = 'updatedAt', order = 'desc' } = sortBy || {};
 
   const skip = Number(start) || 0;
   const skipEnd = Number(end) || 0;
@@ -83,7 +94,8 @@ export const findUsers = async ({
   const orderBy = [];
 
   if (column && order) {
-    orderBy.push({ [column]: order });
+    const orderByColumn = buildOrderBy(column, order);
+    orderBy.push(orderByColumn);
   }
 
   return await prisma.user.findMany({
