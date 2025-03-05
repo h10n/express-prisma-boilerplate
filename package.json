@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "rimraf dist && tsc && tsc-alias",
+    "build": "rimraf dist && tsc --project tsconfig.build.json && tsc-alias",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "NODE_ENV=production tsx dist/index.js",
     "dev": "NODE_ENV=development tsx watch --clear-screen=false ./index.ts",
