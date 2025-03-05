@@ -403,6 +403,7 @@ export const userSeeder = async (prisma: PrismaClient) => {
     const user = data[i];
     const id = generateId(50);
     const birthDate = new Date('1996-01-01 00:00:00');
+    const gender = i % 2 === 0 ? GenderEnum.FEMALE : GenderEnum.MALE;
 
     const password = await new Argon2id().hash('admin123');
     const users = await prisma.user.upsert({
@@ -416,7 +417,7 @@ export const userSeeder = async (prisma: PrismaClient) => {
             firstName: user.firstName,
             lastName: user.lastName,
             birthDate,
-            gender: GenderEnum.MALE,
+            gender,
           },
         },
       },
@@ -431,7 +432,7 @@ export const userSeeder = async (prisma: PrismaClient) => {
             firstName: user.firstName,
             lastName: user.lastName,
             birthDate,
-            gender: user.gender,
+            gender,
           },
         },
       },
