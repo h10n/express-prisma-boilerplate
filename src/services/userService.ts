@@ -20,7 +20,14 @@ export const getUserById = async (id: string) => {
 };
 
 export const createUser = async (userData: TUserData) => {
-  const createdUser = await insertUser(userData);
+  const { roleId, ...restUserData } = userData;
+
+  const parsedRoleId = Number(roleId) || 2;
+
+  const createdUser = await insertUser({
+    ...restUserData,
+    roleId: parsedRoleId,
+  });
 
   return createdUser;
 };

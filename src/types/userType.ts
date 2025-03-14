@@ -20,4 +20,8 @@ export type TUserData = {
   email: string;
   password: string;
   roleId: number;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  gender: string;
 };

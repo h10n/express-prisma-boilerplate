@@ -1,13 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { GenderEnum, PrismaClient } from '@prisma/client';
 import { Argon2id } from 'oslo/password';
 import { generateId } from 'lucia';
 
 export const userSeeder = async (prisma: PrismaClient) => {
-  enum GenderEnum {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-  }
-
   const dummyUsers = [
     {
       email: 'user1@example.com',
@@ -428,7 +423,6 @@ export const userSeeder = async (prisma: PrismaClient) => {
         roleId: user.roleId,
         profile: {
           create: {
-            id: i + 1,
             firstName: user.firstName,
             lastName: user.lastName,
             birthDate,
