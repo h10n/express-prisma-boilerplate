@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  createUser,
+  createUserWithProfile,
   deleteUserById,
   getUsers,
   updateUserById,
@@ -34,12 +34,12 @@ export const createNewUser = async (
 ) => {
   try {
     const userData = req.body as TUserData;
-    const createdUser = await createUser(userData);
+    const data = await createUserWithProfile(userData);
 
     res.status(StatusCodes.CREATED).json({
       status: 'success',
       message: 'A new user account has been created successfully.',
-      data: createdUser,
+      data,
     });
   } catch (err) {
     return next(err);

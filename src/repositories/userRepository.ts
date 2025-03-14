@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+
 import prisma from '@/config/prisma';
 import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
@@ -185,8 +187,12 @@ export const findUserByEmail = async (email: string) => {
   });
 };
 
-export const insertUser = async (userData: TUserData) => {
-  const user = await prisma.user.create({
+export const insertUser = async (
+  userData: TUserData,
+  tx?: Prisma.TransactionClient,
+) => {
+  const client = tx || prisma;
+  const user = await client.user.create({
     data: {
       id: generateId(50),
       email: userData.email,
