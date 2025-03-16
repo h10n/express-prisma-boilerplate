@@ -8,6 +8,7 @@ import {
   deleteUser,
   updateUser,
   countUsers,
+  findUserByEmail,
 } from '@/repositories/userRepository';
 import { TUserData, TUserQueryFilters } from '@/types/userType';
 import { createProfile } from './profileService';
@@ -69,4 +70,10 @@ export const createUserWithProfile = async (userData: TUserData) => {
       throw err;
     }
   });
+};
+
+export const checkUserExists = async (email: string): Promise<boolean> => {
+  const existingUser = await findUserByEmail(email);
+
+  return !!existingUser;
 };
