@@ -3,6 +3,7 @@ import {
   checkUserExists,
   createUserWithProfile,
   deleteUserById,
+  getUserById,
   getUsers,
   updateUserById,
 } from '@/services/userService';
@@ -17,12 +18,12 @@ export const getListUsers = async (
 ) => {
   try {
     const queryFilters = req.query as TUserQueryFilters;
-    const userList = await getUsers(queryFilters);
+    const data = await getUsers(queryFilters);
 
     res.status(StatusCodes.OK).json({
       status: 'success',
       message: 'User list retrieved successfully.',
-      data: userList,
+      data,
     });
   } catch (err) {
     return next(err);
@@ -52,6 +53,26 @@ export const createNewUser = async (
     res.status(StatusCodes.CREATED).json({
       status: 'success',
       message: 'A new user account has been created successfully.',
+      data,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.params.id;
+
+    const data = await getUserById(userId);
+
+    res.status(StatusCodes.OK).json({
+      status: 'success',
+      message: 'User data retrieved successfully.',
       data,
     });
   } catch (err) {

@@ -1,3 +1,6 @@
+import { Omit } from '@prisma/client/runtime/library';
+import { GenderEnum } from '@prisma/client';
+
 export type TUserFilter = {
   roles?: string;
   genders?: string;
@@ -24,4 +27,7 @@ export type TUserData = {
   lastName: string;
   birthDate: string;
   gender: string;
+};
+export type TUserProfileData = Omit<TUserData, 'gender'> & {
+  gender: GenderEnum;
 };

@@ -1,6 +1,5 @@
-import { Prisma } from '@prisma/client';
+import { GenderEnum, Prisma } from '@prisma/client';
 
-import prisma from '@/config/prisma';
 import {
   findUserById,
   findUsers,
@@ -9,19 +8,16 @@ import {
   updateUser,
   countUsers,
   findUserByEmail,
+  insertUserWithProfile,
 } from '@/repositories/userRepository';
 import { TUserData, TUserQueryFilters } from '@/types/userType';
-import { createProfile } from './profileService';
+import stringToEnum from '@/utils/stringToEnum';
 
 export const getUsers = async (filters: TUserQueryFilters) => {
   const totalCount = await countUsers(filters);
 
   const usersData = await findUsers(filters);
   return { users: usersData, total: totalCount || 0 };
-};
-
-export const getUserById = async (id: string) => {
-  return await findUserById(id);
 };
 
 export const createUser = async (
@@ -43,14 +39,18 @@ export const createUser = async (
   return createdUser;
 };
 
+export const getUserById = async (id: string) => {
+  return await findUserById(id);
+};
+
 export const deleteUserById = async (id: string) => {
-  await getUserById(id);
+  // await getUserById(id);
 
   await deleteUser(id);
 };
 
 export const updateUserById = async (id: string, userData: TUserData) => {
-  await getUserById(id);
+  // await getUserById(id);
 
   const updatedUser = await updateUser(id, userData);
 
@@ -58,18 +58,18 @@ export const updateUserById = async (id: string, userData: TUserData) => {
 };
 
 export const createUserWithProfile = async (userData: TUserData) => {
-  return await prisma.$transaction(async (tx) => {
-    try {
-      const createdUser = await createUser(userData, tx);
-      const { id: userId, password, ...restCreatedUser } = createdUser;
-      const profileData = { ...userData, userId };
-      const createdProfile = await createProfile(profileData, tx);
+  const { gender, roleId, ...restUserData } = userData;
 
-      return { ...restCreatedUser, ...createdProfile };
-    } catch (err) {
-      throw err;
-    }
+  const parsedGender = stringToEnum(gender, GenderEnum, GenderEnum.MALE);
+  const parsedRoleId = Number(roleId) || 2;
+
+  const createdUserWithProfile = await insertUserWithProfile({
+    ...restUserData,
+    gender: parsedGender,
+    roleId: parsedRoleId,
   });
+
+  return createdUserWithProfile;
 };
 
 export const checkUserExists = async (email: string): Promise<boolean> => {

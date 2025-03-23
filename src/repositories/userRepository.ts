@@ -3,7 +3,12 @@ import { Prisma } from '@prisma/client';
 import prisma from '@/config/prisma';
 import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
-import { TUserFilter, TUserData, TUserQueryFilters } from '@/types/userType';
+import {
+  TUserFilter,
+  TUserData,
+  TUserQueryFilters,
+  TUserProfileData,
+} from '@/types/userType';
 
 const buildOrderBy = (column: string, order: string) => {
   const keys = column.split('.');
@@ -145,7 +150,6 @@ export const findUserById = async (id: string) => {
     select: {
       id: true,
       email: true,
-      password: true,
       profile: {
         select: {
           id: true,
@@ -199,6 +203,13 @@ export const insertUser = async (
       password: await new Argon2id().hash(userData.password),
       roleId: userData.roleId,
     },
+    select: {
+      id: true,
+      email: true,
+      roleId: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
   return user;
@@ -210,6 +221,38 @@ export const deleteUser = async (id: string) => {
       id,
     },
   });
+};
+
+export const insertUserWithProfile = async (
+  userData: TUserProfileData,
+  tx?: Prisma.TransactionClient,
+) => {
+  const client = tx || prisma;
+  const user = await client.user.create({
+    data: {
+      id: generateId(50),
+      email: userData.email,
+      password: await new Argon2id().hash(userData.password),
+      roleId: userData.roleId,
+      profile: {
+        create: {
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          gender: userData.gender,
+          birthDate: userData.birthDate,
+        },
+      },
+    },
+    select: {
+      id: true,
+      email: true,
+      roleId: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  return user;
 };
 
 export const updateUser = async (id: string, userData: TUserData) => {

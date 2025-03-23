@@ -2,6 +2,7 @@ import {
   createNewUser,
   deleteUser,
   getListUsers,
+  getUser,
   updateUser,
 } from '@/controllers/userController';
 import { getListUsersV2 } from '@/controllers/userControllerV2';
@@ -21,6 +22,7 @@ userRouter.get(
 );
 userRouter.get('/', validateRequest(getListUsersSchema), getListUsers);
 userRouter.post('/', validateRequest(createNewUserSchema), createNewUser);
+userRouter.get('/:id', getUser);
 userRouter.delete('/:id', deleteUser);
 userRouter.patch('/:id', updateUser);
 
