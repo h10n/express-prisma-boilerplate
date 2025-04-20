@@ -269,3 +269,37 @@ export const updateUser = async (id: string, userData: TUserData) => {
 
   return user;
 };
+
+export const updateUserWithProfile = async (
+  userId: string,
+  userData: TUserProfileData,
+  tx?: Prisma.TransactionClient,
+) => {
+  const client = tx || prisma;
+
+  return client.user.update({
+    where: { id: userId },
+    data: {
+      email: userData.email,
+      ...(userData.password && {
+        password: await new Argon2id().hash(userData.password),
+      }),
+      roleId: userData.roleId,
+      profile: {
+        update: {
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          gender: userData.gender,
+          birthDate: userData.birthDate,
+        },
+      },
+    },
+    select: {
+      id: true,
+      email: true,
+      roleId: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+};

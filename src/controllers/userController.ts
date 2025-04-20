@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  checkUserExists,
-  createUserWithProfile,
+  createUser,
   deleteUserById,
   getUserById,
   getUsers,
@@ -9,7 +8,6 @@ import {
 } from '@/services/userService';
 import { StatusCodes } from 'http-status-codes';
 import { TUserData, TUserQueryFilters } from '@/types/userType';
-import { ValidationError } from '@/errors/ValidationError';
 
 export const getListUsers = async (
   req: Request,
@@ -38,17 +36,7 @@ export const createNewUser = async (
   try {
     const userData = req.body as TUserData;
 
-    const isEmailExists = await checkUserExists(userData.email);
-
-    if (isEmailExists) {
-      throw new ValidationError(
-        'This Email is already registered.',
-        'EMAIL_ALREADY_EXISTS',
-        StatusCodes.CONFLICT,
-      );
-    }
-
-    const data = await createUserWithProfile(userData);
+    const data = await createUser(userData);
 
     res.status(StatusCodes.CREATED).json({
       status: 'success',

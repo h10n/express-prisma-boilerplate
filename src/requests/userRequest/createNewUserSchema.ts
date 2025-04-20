@@ -39,10 +39,10 @@ const getBodySchema = () => {
         .min(1, { message: 'First name is required.' })
         .max(255, { message: 'First name is too long.' }),
       lastName: z
-        .string({ required_error: 'Last name is required.' })
+        .string()
         .trim()
-        .min(1, { message: 'Last name is required.' })
-        .max(255, { message: 'Last name is too long.' }),
+        .max(255, { message: 'Last name is too long.' })
+        .optional(),
       birthDate: z
         .string({ required_error: 'Birth date is required.' })
         .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/, {
