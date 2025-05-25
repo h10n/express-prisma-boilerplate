@@ -150,6 +150,9 @@ export const findUserById = async (id: string) => {
     select: {
       id: true,
       email: true,
+      roleId: true,
+      createdAt: true,
+      updatedAt: true,
       profile: {
         select: {
           id: true,
@@ -249,6 +252,23 @@ export const insertUserWithProfile = async (
       roleId: true,
       createdAt: true,
       updatedAt: true,
+      profile: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          birthDate: true,
+          website: true,
+          avatarUrl: true,
+          gender: true,
+        },
+      },
+      role: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 
@@ -300,6 +320,23 @@ export const updateUserWithProfile = async (
       roleId: true,
       createdAt: true,
       updatedAt: true,
+      profile: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          birthDate: true,
+          website: true,
+          avatarUrl: true,
+          gender: true,
+        },
+      },
+      role: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 };
