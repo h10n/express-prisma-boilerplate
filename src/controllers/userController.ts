@@ -36,6 +36,10 @@ export const createNewUser = async (
   try {
     const userData = req.body as TUserData;
 
+    if (req.file) {
+      userData.profilePicture = req.file;
+    }
+
     const data = await createUser(userData);
 
     res.status(StatusCodes.CREATED).json({

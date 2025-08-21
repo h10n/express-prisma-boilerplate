@@ -8,6 +8,7 @@ import {
 import { getListUsersV2 } from '@/controllers/userControllerV2';
 import { validateRequest } from '@/middlewares/requestValidatorMiddleware';
 import { validateApiVersion } from '@/middlewares/versionMiddleware';
+import { uploadSingle } from '@/middlewares/fileUploadMiddleware';
 import { getListUsersSchema } from '@/requests/userRequest';
 import { createNewUserSchema } from '@/requests/userRequest/createNewUserSchema';
 import { updateUserSchema } from '@/requests/userRequest/updateUserSchema';
@@ -22,7 +23,17 @@ userRouter.get(
   getListUsersV2,
 );
 userRouter.get('/', validateRequest(getListUsersSchema), getListUsers);
-userRouter.post('/', validateRequest(createNewUserSchema), createNewUser);
+
+userRouter.post(
+  '/',
+  uploadSingle('profilePicture', {
+    maxSize: 5 * 1024 * 1024,
+    allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'],
+  }),
+  validateRequest(createNewUserSchema),
+  createNewUser,
+);
+
 userRouter.patch('/:id', validateRequest(updateUserSchema), updateUser);
 userRouter.get('/:id', getUser);
 userRouter.delete('/:id', deleteUser);

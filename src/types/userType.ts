@@ -27,7 +27,10 @@ export type TUserData = {
   lastName: string;
   birthDate: string;
   gender: string;
+  profilePicture?: Express.Multer.File;
 };
-export type TUserProfileData = Omit<TUserData, 'gender'> & {
+
+export type TUserProfileData = Omit<TUserData, 'gender' | 'profilePicture'> & {
   gender: GenderEnum;
+  avatarUrl?: string;
 };

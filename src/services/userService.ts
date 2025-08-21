@@ -13,6 +13,7 @@ import { TUserData, TUserQueryFilters } from '@/types/userType';
 import stringToEnum from '@/utils/stringToEnum';
 import { ValidationError } from '@/errors/ValidationError';
 import { StatusCodes } from 'http-status-codes';
+import { handleSingleFileUpload } from '@/utils/fileUploadUtils';
 
 export const getUsers = async (filters: TUserQueryFilters) => {
   const totalCount = await countUsers(filters);
@@ -32,9 +33,10 @@ export const deleteUserById = async (id: string) => {
 };
 
 export const createUser = async (userData: TUserData) => {
-  const { gender, roleId, ...restUserData } = userData;
+  const { gender, roleId, profilePicture, ...restUserData } = userData;
 
-  const isEmailExists = await checkUserExists(userData.email);
+  const existingUser = await findUserByEmail(userData.email);
+  const isEmailExists = !!existingUser;
 
   if (isEmailExists) {
     throw new ValidationError(
@@ -47,10 +49,36 @@ export const createUser = async (userData: TUserData) => {
   const parsedGender = stringToEnum(gender, GenderEnum, GenderEnum.MALE);
   const parsedRoleId = Number(roleId) || 2;
 
+  let avatarUrl: string | undefined;
+  if (profilePicture) {
+    const uploadOptions = {
+      path: 'users/profile-pictures',
+      metadata: {
+        type: 'profile-picture',
+        uploadedAt: new Date().toISOString(),
+      },
+      public: false,
+      maxSize: 5 * 1024 * 1024,
+      allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'],
+    };
+
+    const uploadResult = await handleSingleFileUpload(
+      profilePicture,
+      uploadOptions,
+    );
+
+    if (uploadResult.success && uploadResult.data) {
+      avatarUrl = uploadResult.data.publicUrl;
+    } else {
+      console.warn('Profile picture upload failed:', uploadResult.error);
+    }
+  }
+
   const createdUserWithProfile = await insertUserWithProfile({
     ...restUserData,
     gender: parsedGender,
     roleId: parsedRoleId,
+    avatarUrl,
   });
 
   return createdUserWithProfile;
@@ -66,6 +94,7 @@ export const updateUserById = async (userId: string, userData: TUserData) => {
   const { gender, roleId, ...restUserData } = userData;
 
   const existingUser = await findUserById(userId);
+
   if (!existingUser) {
     throw new ValidationError(
       'User not found.',

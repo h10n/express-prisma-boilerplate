@@ -1,31 +1,78 @@
+/v1/users:
+  post:
+    tags: [V1 users]
+    summary: Create a new user
+    description: Creates a new user account with optional profile picture upload.
+    requestBody:
+      description: User creation data with optional profile picture
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: "#components/schemas/users/requests/createUser"
+    responses:
+      201:
+        description: User created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "success"
+                message:
+                  type: string
+                  example: "A new user account has been created successfully."
+                data:
+                  $ref: "#components/schemas/users/responses/createUser"
+      400:
+        description: Validation error or file upload error
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
+      409:
+        description: Email already exists
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
+
 /v1/users/status:
   patch:
     tags: [V1 users]
     summary: Patch user status
     description: Retrieves a list of users.
     parameters:
-      - $ref: '#components/schemas/generals/parameters/StartRange'
-      - $ref: '#components/schemas/generals/parameters/EndRange'
-      - $ref: '#components/schemas/generals/parameters/SortByColumn'
-      - $ref: '#components/schemas/generals/parameters/SortOrder'
-      - $ref: '#components/schemas/generals/parameters/RoleFilter'
-      - $ref: '#components/schemas/generals/parameters/GenderFilter'
+      - $ref: "#components/schemas/generals/parameters/StartRange"
+      - $ref: "#components/schemas/generals/parameters/EndRange"
+      - $ref: "#components/schemas/generals/parameters/SortByColumn"
+      - $ref: "#components/schemas/generals/parameters/SortOrder"
+      - $ref: "#components/schemas/generals/parameters/RoleFilter"
+      - $ref: "#components/schemas/generals/parameters/GenderFilter"
     requestBody:
       description: patch user status schema
       content:
         application/json:
           schema:
-            $ref: '#components/schemas/users/requests/patch'
+            $ref: "#components/schemas/users/requests/patch"
     responses:
       200:
         description: patch user status success
         content:
           application/json:
             schema:
-              $ref: '#components/schemas/users/responses/patch'
+              $ref: "#components/schemas/users/responses/patch"
       400:
         description: Error occurred
         content:
           application/json:
             schema:
-              $ref: '#components/schemas/generals/error'
+              $ref: "#components/schemas/generals/error"

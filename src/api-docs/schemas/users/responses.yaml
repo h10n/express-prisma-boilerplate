@@ -2,6 +2,91 @@ components:
   schemas:
     users:
       responses:
+        createUser:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Unique user identifier
+              example: "abc123def456"
+            email:
+              type: string
+              format: email
+              description: User's email address
+              example: "john.doe@example.com"
+            roleId:
+              type: integer
+              description: User's role ID
+              example: 2
+            createdAt:
+              type: string
+              format: date-time
+              description: User creation timestamp
+              example: "2024-01-15T10:30:00.000Z"
+            updatedAt:
+              type: string
+              format: date-time
+              description: User last update timestamp
+              example: "2024-01-15T10:30:00.000Z"
+            profile:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: Profile identifier
+                  example: 1
+                firstName:
+                  type: string
+                  description: User's first name
+                  example: "John"
+                lastName:
+                  type: string
+                  description: User's last name
+                  example: "Doe"
+                birthDate:
+                  type: string
+                  format: date-time
+                  description: User's birth date
+                  example: "1990-01-01T00:00:00.000Z"
+                website:
+                  type: string
+                  description: User's website URL
+                  example: "https://example.com"
+                avatarUrl:
+                  type: string
+                  description: Profile picture URL (if uploaded)
+                  example: "https://storage.googleapis.com/bucket/users/profile-pictures/abc123.jpg"
+                gender:
+                  type: string
+                  enum: [MALE, FEMALE]
+                  description: User's gender
+                  example: "MALE"
+              required:
+                - id
+                - firstName
+                - gender
+            role:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: Role identifier
+                  example: 2
+                name:
+                  type: string
+                  description: Role name
+                  example: "User"
+              required:
+                - id
+                - name
+          required:
+            - id
+            - email
+            - roleId
+            - createdAt
+            - updatedAt
+            - profile
+            - role
         patch:
           type: object
           properties:
