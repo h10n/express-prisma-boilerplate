@@ -77,6 +77,12 @@ const port = normalizePort(ENV.APP_PORT || 3000);
 app.set('port', port);
 
 /**
+ * Set query parser to 'extended' for better query string parsing.
+ */
+
+app.set('query parser', 'extended');
+
+/**
  * Create HTTP server.
  */
 
