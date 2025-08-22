@@ -243,6 +243,7 @@ export const insertUserWithProfile = async (
           lastName: userData.lastName,
           gender: userData.gender,
           birthDate: userData.birthDate,
+          avatarUrl: userData.avatarUrl,
         },
       },
     },

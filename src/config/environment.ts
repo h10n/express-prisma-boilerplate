@@ -16,6 +16,10 @@ const envSchema = z.object({
     .default('info'),
   APP_PORT: z.string().regex(/^\d+$/).transform(Number),
   DATABASE_URL: z.string().url(),
+  FIREBASE_STORAGE_BUCKET: z.string(),
+  FIREBASE_PROJECT_ID: z.string(),
+  FIREBASE_PRIVATE_KEY: z.string(),
+  FIREBASE_CLIENT_EMAIL: z.string(),
 });
 
 const env = envSchema.safeParse(process.env);
@@ -32,4 +36,8 @@ export const ENV = {
   APP_LOG_LEVEL: env.data.APP_LOG_LEVEL,
   APP_PORT: env.data.APP_PORT,
   DATABASE_URL: env.data.DATABASE_URL,
+  FIREBASE_STORAGE_BUCKET: env.data.FIREBASE_STORAGE_BUCKET,
+  FIREBASE_PROJECT_ID: env.data.FIREBASE_PROJECT_ID,
+  FIREBASE_PRIVATE_KEY: env.data.FIREBASE_PRIVATE_KEY,
+  FIREBASE_CLIENT_EMAIL: env.data.FIREBASE_CLIENT_EMAIL,
 };

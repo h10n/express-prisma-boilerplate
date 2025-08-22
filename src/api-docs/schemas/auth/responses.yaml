@@ -1,0 +1,147 @@
+components:
+  schemas:
+    auth:
+      responses:
+        login:
+          type: object
+          properties:
+            token:
+              type: string
+              description: Session token for authentication
+              example: "abc123def456ghi789"
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Unique user identifier
+                  example: "user123def456"
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                  example: "john.doe@example.com"
+                profile:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Profile identifier
+                      example: 1
+                    firstName:
+                      type: string
+                      description: User's first name
+                      example: "John"
+                    lastName:
+                      type: string
+                      description: User's last name
+                      example: "Doe"
+                    avatarUrl:
+                      type: string
+                      description: Profile picture URL (if uploaded)
+                      example: "https://storage.googleapis.com/bucket/users/profile-pictures/abc123.jpg"
+                  required:
+                    - id
+                    - firstName
+                role:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Role identifier
+                      example: 2
+                    name:
+                      type: string
+                      description: Role name
+                      example: "User"
+                  required:
+                    - id
+                    - name
+              required:
+                - id
+                - email
+                - profile
+                - role
+          required:
+            - token
+            - user
+        session:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Session identifier
+              example: "session123def456"
+            userId:
+              type: string
+              description: User identifier associated with the session
+              example: "user123def456"
+            expiresAt:
+              type: string
+              format: date-time
+              description: Session expiration timestamp
+              example: "2024-12-31T23:59:59.000Z"
+            createdAt:
+              type: string
+              format: date-time
+              description: Session creation timestamp
+              example: "2024-01-15T10:30:00.000Z"
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Unique user identifier
+                  example: "user123def456"
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                  example: "john.doe@example.com"
+                profile:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Profile identifier
+                      example: 1
+                    firstName:
+                      type: string
+                      description: User's first name
+                      example: "John"
+                    lastName:
+                      type: string
+                      description: User's last name
+                      example: "Doe"
+                    avatarUrl:
+                      type: string
+                      description: Profile picture URL (if uploaded)
+                      example: "https://storage.googleapis.com/bucket/users/profile-pictures/abc123.jpg"
+                  required:
+                    - id
+                    - firstName
+                role:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Role identifier
+                      example: 2
+                    name:
+                      type: string
+                      description: Role name
+                      example: "User"
+                  required:
+                    - id
+                    - name
+              required:
+                - id
+                - email
+                - profile
+                - role
+          required:
+            - id
+            - userId
+            - expiresAt
+            - createdAt
+            - user

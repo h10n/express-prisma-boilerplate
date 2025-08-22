@@ -1,0 +1,131 @@
+/v1/auth/login:
+  post:
+    tags: [V1 auth]
+    summary: User login
+    description: Authenticates a user with email and password, creates a session, and returns authentication token.
+    requestBody:
+      description: User login credentials
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/auth/requests/login"
+    responses:
+      200:
+        description: Login successful
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "success"
+                message:
+                  type: string
+                  example: "Login was successful."
+                data:
+                  $ref: "#components/schemas/auth/responses/login"
+        headers:
+          Set-Cookie:
+            description: Session cookie for authentication
+            schema:
+              type: string
+              example: "session=abc123def456; HttpOnly; Secure; SameSite=Strict"
+      401:
+        description: Invalid credentials
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
+      400:
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
+
+/v1/auth/logout:
+  post:
+    tags: [V1 auth]
+    summary: User logout
+    description: Logs out the current user by invalidating their session.
+    security:
+      - bearerAuth: []
+    responses:
+      200:
+        description: Logout successful
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "success"
+                message:
+                  type: string
+                  example: "You have been logged out successfully."
+                data:
+                  type: null
+                  example: null
+        headers:
+          Set-Cookie:
+            description: Cleared session cookie
+            schema:
+              type: string
+              example: "session=; HttpOnly; Secure; SameSite=Strict; Max-Age=0"
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
+
+/v1/auth/session:
+  get:
+    tags: [V1 auth]
+    summary: Get current session
+    description: Retrieves the current user's session information.
+    security:
+      - bearerAuth: []
+    responses:
+      200:
+        description: Session retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "success"
+                message:
+                  type: string
+                  example: "Session is active. User data retrieved successfully."
+                data:
+                  $ref: "#components/schemas/auth/responses/session"
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
+      500:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/generals/error"
