@@ -9,6 +9,7 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { z, ZodIssue } from 'zod';
 import { ValidationError } from '@/errors/ValidationError';
+import { FileUploadError } from '@/errors/FileUploadError';
 
 type TAppError = Error & {
   status: string;
@@ -85,6 +86,12 @@ export const handleError = (
       status: REQUEST_STATUSES.FAIL,
       message: err.message,
       code: err.code,
+    });
+  } else if (err instanceof FileUploadError) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      status: 'error',
+      message: err.message,
+      code: err.errorCode,
     });
   } else if (err instanceof Error) {
     const error = classifyError(err);

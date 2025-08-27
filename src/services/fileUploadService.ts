@@ -136,33 +136,19 @@ export const uploadFile = async (
       } catch (error) {
         publicUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
       }
-    } else {
-      try {
-        const [signedUrl] = await fileRef.getSignedUrl({
-          action: 'read',
-          expires: Date.now() + 365 * 24 * 60 * 60 * 1000,
-        });
-        publicUrl = signedUrl;
-      } catch (error) {
-        // Silent fallback
-      }
     }
 
     const result: UploadResult = {
       fileName: fileRef.name,
       fullPath: filePath,
       publicUrl,
-      metadata: {
-        originalName: file.originalname,
-        size: file.size,
-        contentType: file.mimetype,
-        uploadedAt: new Date(),
-        path: filePath,
-        publicUrl,
-        customMetadata: options.metadata,
-      },
       size: file.size,
       contentType: file.mimetype,
+      metadata: {
+        originalName: file.originalname,
+        uploadedAt: new Date(),
+        customMetadata: options.metadata,
+      },
     };
 
     return result;

@@ -11,11 +11,7 @@ export interface FileUploadOptions {
 
 export interface FileMetadata {
   originalName: string;
-  size: number;
-  contentType: string;
   uploadedAt: Date;
-  path: string;
-  publicUrl?: string;
   customMetadata?: Record<string, string>;
 }
 
