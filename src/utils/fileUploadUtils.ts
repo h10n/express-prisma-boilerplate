@@ -1,4 +1,5 @@
-import { uploadFile, uploadMultipleFiles } from '@/services/fileUploadService';
+import { uploadFile } from '@/services/fileUploadService';
+import { FILE_UPLOAD } from '@/constants';
 import { FileUploadOptions, UploadResult } from '@/types/fileUploadType';
 
 export const uploadProfilePicture = async (
@@ -6,13 +7,13 @@ export const uploadProfilePicture = async (
   userId?: string,
 ): Promise<UploadResult> => {
   const uploadOptions: FileUploadOptions = {
-    path: `users/profile-pictures${userId ? `/${userId}` : ''}`,
+    path: `${FILE_UPLOAD.PROFILE_PICTURE.PATH}${userId ? `/${userId}` : ''}`,
     metadata: {
-      type: 'profile-picture',
+      type: FILE_UPLOAD.PROFILE_PICTURE.METADATA_TYPE,
       uploadedAt: new Date().toISOString(),
     },
-    maxSize: 5 * 1024 * 1024, // 5MB
-    allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'],
+    maxSize: FILE_UPLOAD.PROFILE_PICTURE.MAX_SIZE,
+    allowedExtensions: FILE_UPLOAD.PROFILE_PICTURE.ALLOWED_EXTENSIONS,
   };
 
   return await uploadFile(file, uploadOptions);
@@ -24,22 +25,15 @@ export const uploadDocument = async (
   userId?: string,
 ): Promise<UploadResult> => {
   const uploadOptions: FileUploadOptions = {
-    path: `users/documents/${documentType}${userId ? `/${userId}` : ''}`,
+    path: `${FILE_UPLOAD.DOCUMENT.PATH}/${documentType}${userId ? `/${userId}` : ''}`,
     metadata: {
-      type: 'document',
+      type: FILE_UPLOAD.DOCUMENT.METADATA_TYPE,
       documentType,
       uploadedAt: new Date().toISOString(),
     },
-    maxSize: 10 * 1024 * 1024, // 10MB
-    allowedExtensions: ['.pdf', '.doc', '.docx', '.txt'],
+    maxSize: FILE_UPLOAD.DOCUMENT.MAX_SIZE,
+    allowedExtensions: FILE_UPLOAD.DOCUMENT.ALLOWED_EXTENSIONS,
   };
 
   return await uploadFile(file, uploadOptions);
-};
-
-export const uploadMultipleFilesWithOptions = async (
-  files: Express.Multer.File[],
-  options: FileUploadOptions,
-): Promise<UploadResult[]> => {
-  return await uploadMultipleFiles(files, options);
 };

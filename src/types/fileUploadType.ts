@@ -29,8 +29,3 @@ export interface DeleteResult {
   path: string;
   error?: string;
 }
-
-export interface FileValidationResult {
-  isValid: boolean;
-  error?: string;
-}

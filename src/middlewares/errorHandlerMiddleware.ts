@@ -85,11 +85,11 @@ export const handleError = (
     res.status(err.statusCode).json({
       status: REQUEST_STATUSES.FAIL,
       message: err.message,
-      code: err.code,
+      code: err.errorCode,
     });
   } else if (err instanceof FileUploadError) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      status: 'error',
+      status: REQUEST_STATUSES.ERROR,
       message: err.message,
       code: err.errorCode,
     });
