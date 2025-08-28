@@ -13,13 +13,43 @@ import { TUserData, TUserQueryFilters } from '@/types/userType';
 import stringToEnum from '@/utils/stringToEnum';
 import { ValidationError } from '@/errors/ValidationError';
 import { StatusCodes } from 'http-status-codes';
-import { handleSingleFileUpload } from '@/utils/fileUploadUtils';
+import { uploadProfilePicture } from '@/utils/fileUploadUtils';
+import { FileUploadError } from '@/errors/FileUploadError';
+import { generateSignedUrl } from './fileUploadService';
 
 export const getUsers = async (filters: TUserQueryFilters) => {
-  const totalCount = await countUsers(filters);
+  const [totalCount, usersData] = await Promise.all([
+    countUsers(filters),
+    findUsers(filters),
+  ]);
 
-  const usersData = await findUsers(filters);
-  return { users: usersData, total: totalCount || 0 };
+  const resolveAvatarUrl = async (url?: string | null) => {
+    if (!url) return null;
+    try {
+      return await generateSignedUrl(url);
+    } catch {
+      return null;
+    }
+  };
+
+  const usersWithAvatars = await Promise.all(
+    usersData.map(async (user) => {
+      const avatarUrl = await resolveAvatarUrl(user.profile?.avatarUrl);
+
+      return {
+        ...user,
+        profile: {
+          ...user.profile,
+          avatarUrl,
+        },
+      };
+    }),
+  );
+
+  return {
+    users: usersWithAvatars,
+    total: totalCount ?? 0,
+  };
 };
 
 export const getUserById = async (id: string) => {
@@ -51,26 +81,22 @@ export const createUser = async (userData: TUserData) => {
 
   let avatarUrl: string | undefined;
   if (profilePicture) {
-    const uploadOptions = {
-      path: 'users/profile-pictures',
-      metadata: {
-        type: 'profile-picture',
-        uploadedAt: new Date().toISOString(),
-      },
-      public: false,
-      maxSize: 5 * 1024 * 1024,
-      allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'],
-    };
-
-    const uploadResult = await handleSingleFileUpload(
-      profilePicture,
-      uploadOptions,
-    );
-
-    if (uploadResult.success && uploadResult.data) {
-      avatarUrl = uploadResult.data.publicUrl;
-    } else {
-      console.warn('Profile picture upload failed:', uploadResult.error);
+    try {
+      const uploadResult = await uploadProfilePicture(profilePicture);
+      avatarUrl = uploadResult.fullPath;
+    } catch (error) {
+      if (error instanceof FileUploadError) {
+        throw new ValidationError(
+          `Profile picture upload failed: ${error.message}`,
+          'PROFILE_PICTURE_UPLOAD_FAILED',
+          StatusCodes.BAD_REQUEST,
+        );
+      }
+      throw new ValidationError(
+        'Profile picture upload failed',
+        'PROFILE_PICTURE_UPLOAD_FAILED',
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 

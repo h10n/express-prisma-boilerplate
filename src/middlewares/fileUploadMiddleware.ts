@@ -13,12 +13,11 @@ const fileFilter = (
 ) => {
   const options: FileUploadOptions = (req as any).uploadOptions || {};
 
-  const validation = validateFile(file, options);
-
-  if (validation.isValid) {
+  try {
+    validateFile(file, options);
     cb(null, true);
-  } else {
-    cb(new FileUploadError(validation.error!, 'INVALID_FILE'));
+  } catch (error) {
+    cb(error as Error);
   }
 };
 

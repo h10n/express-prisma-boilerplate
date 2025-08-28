@@ -21,6 +21,8 @@ model Role {
   users     User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+  deletedAt DateTime?  
 }
 
 model User {
@@ -33,6 +35,9 @@ model User {
   sessions  Session[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  deleted   Boolean   @default(false)
+  deletedAt DateTime?
+
 }
 
 model Session {
@@ -42,6 +47,8 @@ model Session {
   expiresAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+  deletedAt DateTime?  
 }
 
 model Profile {
@@ -56,4 +63,6 @@ model Profile {
   gender    GenderEnum @default(MALE)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  deleted   Boolean    @default(false)
+  deletedAt DateTime?  
 }
