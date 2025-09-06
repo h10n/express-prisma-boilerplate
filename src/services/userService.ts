@@ -15,7 +15,16 @@ import { ValidationError } from '@/errors/ValidationError';
 import { StatusCodes } from 'http-status-codes';
 import { uploadProfilePicture } from '@/utils/fileUploadUtils';
 import { FileUploadError } from '@/errors/FileUploadError';
-import { generateSignedUrl } from './fileUploadService';
+import { generateSignedUrl, deleteFile } from './fileUploadService';
+
+const generateSignedAvatarUrl = async (url?: string | null) => {
+  if (!url) return null;
+  try {
+    return await generateSignedUrl(url);
+  } catch {
+    return null;
+  }
+};
 
 export const getUsers = async (filters: TUserQueryFilters) => {
   const [totalCount, usersData] = await Promise.all([
@@ -23,18 +32,9 @@ export const getUsers = async (filters: TUserQueryFilters) => {
     findUsers(filters),
   ]);
 
-  const resolveAvatarUrl = async (url?: string | null) => {
-    if (!url) return null;
-    try {
-      return await generateSignedUrl(url);
-    } catch {
-      return null;
-    }
-  };
-
   const usersWithAvatars = await Promise.all(
     usersData.map(async (user) => {
-      const avatarUrl = await resolveAvatarUrl(user.profile?.avatarUrl);
+      const avatarUrl = await generateSignedAvatarUrl(user.profile?.avatarUrl);
 
       return {
         ...user,
@@ -52,14 +52,32 @@ export const getUsers = async (filters: TUserQueryFilters) => {
   };
 };
 
-export const getUserById = async (id: string) => {
-  return await findUserById(id);
+export const getUserById = async (userId: string) => {
+  const user = await findUserById(userId);
+
+  if (!user) {
+    throw new ValidationError(
+      'User not found.',
+      'USER_NOT_FOUND',
+      StatusCodes.NOT_FOUND,
+    );
+  }
+
+  const avatarUrl = await generateSignedAvatarUrl(user.profile?.avatarUrl);
+
+  return {
+    ...user,
+    profile: {
+      ...user.profile,
+      avatarUrl,
+    },
+  };
 };
 
-export const deleteUserById = async (id: string) => {
-  // await getUserById(id);
+export const deleteUserById = async (userId: string) => {
+  // await getUserById(userId);
 
-  await deleteUser(id);
+  await deleteUser(userId);
 };
 
 export const createUser = async (userData: TUserData) => {
@@ -117,7 +135,7 @@ export const checkUserExists = async (email: string): Promise<boolean> => {
 };
 
 export const updateUserById = async (userId: string, userData: TUserData) => {
-  const { gender, roleId, ...restUserData } = userData;
+  const { gender, roleId, profilePicture, ...restUserData } = userData;
 
   const existingUser = await findUserById(userId);
 
@@ -143,9 +161,66 @@ export const updateUserById = async (userId: string, userData: TUserData) => {
   const parsedGender = stringToEnum(gender, GenderEnum, GenderEnum.MALE);
   const parsedRoleId = Number(roleId) || 2;
 
-  return await updateUserWithProfile(userId, {
-    ...restUserData,
-    gender: parsedGender,
-    roleId: parsedRoleId,
-  });
+  let avatarUrl: string | undefined;
+  let oldAvatarUrl: string | undefined;
+
+  if (profilePicture) {
+    try {
+      oldAvatarUrl = existingUser.profile?.avatarUrl || undefined;
+
+      const uploadResult = await uploadProfilePicture(profilePicture);
+      avatarUrl = uploadResult.fullPath;
+    } catch (error) {
+      if (error instanceof FileUploadError) {
+        throw new ValidationError(
+          `Profile picture upload failed: ${error.message}`,
+          'PROFILE_PICTURE_UPLOAD_FAILED',
+          StatusCodes.BAD_REQUEST,
+        );
+      }
+      throw new ValidationError(
+        'Profile picture upload failed',
+        'PROFILE_PICTURE_UPLOAD_FAILED',
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  try {
+    const updatedUser = await updateUserWithProfile(userId, {
+      ...restUserData,
+      gender: parsedGender,
+      roleId: parsedRoleId,
+      avatarUrl,
+    });
+
+    if (oldAvatarUrl && avatarUrl) {
+      try {
+        await deleteFile(oldAvatarUrl);
+      } catch (deleteError) {
+        console.warn(
+          `Failed to delete old profile picture: ${oldAvatarUrl}`,
+          deleteError,
+        );
+      }
+    }
+
+    return updatedUser;
+  } catch (updateError) {
+    if (avatarUrl && avatarUrl !== oldAvatarUrl) {
+      try {
+        await deleteFile(avatarUrl);
+        console.warn(
+          `Cleaned up orphaned profile picture after update failure: ${avatarUrl}`,
+        );
+      } catch (cleanupError) {
+        console.error(
+          `Failed to cleanup orphaned profile picture: ${avatarUrl}`,
+          cleanupError,
+        );
+      }
+    }
+
+    throw updateError;
+  }
 };

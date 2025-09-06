@@ -34,7 +34,15 @@ userRouter.post(
   createNewUser,
 );
 
-userRouter.patch('/:id', validateRequest(updateUserSchema), updateUser);
+userRouter.patch(
+  '/:id',
+  uploadSingle('profilePicture', {
+    maxSize: 5 * 1024 * 1024,
+    allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'],
+  }),
+  validateRequest(updateUserSchema),
+  updateUser,
+);
 userRouter.get('/:id', getUser);
 userRouter.delete('/:id', deleteUser);
 
