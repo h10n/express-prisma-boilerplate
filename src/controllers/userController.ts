@@ -101,6 +101,10 @@ export const updateUser = async (
     const userId = req.params.id;
     const userData = req.body as TUserData;
 
+    if (req.file) {
+      userData.profilePicture = req.file;
+    }
+
     const updatedUser = await updateUserById(userId, userData);
 
     res.status(StatusCodes.OK).json({

@@ -219,7 +219,7 @@ export const insertUser = async (
 };
 
 export const deleteUser = async (id: string) => {
-  await prisma.user.delete({
+  await prisma.user.softDelete({
     where: {
       id,
     },
@@ -312,6 +312,7 @@ export const updateUserWithProfile = async (
           lastName: userData.lastName,
           gender: userData.gender,
           birthDate: userData.birthDate,
+          avatarUrl: userData.avatarUrl,
         },
       },
     },

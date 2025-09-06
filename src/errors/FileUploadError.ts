@@ -55,11 +55,29 @@ export class FileUploadError extends Error {
     );
   }
 
-  static invalidFileData(): FileUploadError {
+  static signedUrlGenerationFailed(filePath: string): FileUploadError {
     return new FileUploadError(
-      'Invalid file data provided',
-      'INVALID_FILE_DATA',
-      StatusCodes.BAD_REQUEST,
+      `Failed to generate signed URL for: ${filePath}`,
+      'SIGNED_URL_GENERATION_FAILED',
+      StatusCodes.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  static fileAccessError(
+    message: string = 'Failed to get accessible file URL',
+  ): FileUploadError {
+    return new FileUploadError(
+      message,
+      'FILE_ACCESS_ERROR',
+      StatusCodes.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  static metadataRetrievalFailed(filePath: string): FileUploadError {
+    return new FileUploadError(
+      `Failed to retrieve metadata for: ${filePath}`,
+      'METADATA_RETRIEVAL_FAILED',
+      StatusCodes.INTERNAL_SERVER_ERROR,
     );
   }
 }

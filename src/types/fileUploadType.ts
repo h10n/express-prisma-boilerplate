@@ -11,11 +11,7 @@ export interface FileUploadOptions {
 
 export interface FileMetadata {
   originalName: string;
-  size: number;
-  contentType: string;
   uploadedAt: Date;
-  path: string;
-  publicUrl?: string;
   customMetadata?: Record<string, string>;
 }
 
@@ -31,10 +27,5 @@ export interface UploadResult {
 export interface DeleteResult {
   success: boolean;
   path: string;
-  error?: string;
-}
-
-export interface FileValidationResult {
-  isValid: boolean;
   error?: string;
 }
